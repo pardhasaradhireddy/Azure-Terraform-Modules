@@ -1,0 +1,14 @@
+tempo:
+
+  compactor:
+    compaction:
+      block_retention: 720h
+      
+  storage:
+    trace:
+      backend: azure
+      azure:
+        storage_account_name: "stacaksbackupdevcus"
+        container_name: "tempo"
+        use_managed_identity: true
+        user_assigned_id: "1a842504-0179-4120-b5e1-5180e07c9321"

@@ -1,0 +1,24 @@
+This module creates all resources necessary for the Azure Redis Cache deployment.
+
+Current State:  Info here
+
+The following resources are created in this deployment:
+
+    - Resource Group
+    - Redis Cache Service Deployment
+    - Azure Key Vault Certificate
+    - Enables Diagnostics
+
+Future State:  Info here
+
+Prior to Updating this Module or Consuming Azure Redis Cache Resources, Please Refer to:
+
+https://gsep.daimler.com/confluence/display/DTNATELE/Telematics+2.0+README+Reference+Document
+
+Official Microsoft Documentation for the Azure Key Vault Service:
+
+https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview
+
+Terraform Resources for Azure Redis Cache Service:
+
+https://www.terraform.io/docs/providers/azurerm/r/redis_cache.html

@@ -1,0 +1,27 @@
+ui:
+  enabled: true
+injector:
+  enabled: false
+server:
+  enabled: true
+  standalone:
+    enabled: true
+    nodeSelector:
+      app: api
+  ingress:
+    enabled: True
+    ingressClassName: nginx
+    pathType: Prefix
+    activeService: true
+    hosts:
+      - host: vault.prod1.csgna.cloud.tbintra.net
+    tls:
+     - secretName: ingress-local-tls
+       hosts:
+         - vault.prod1.csgna.cloud.tbintra.net
+  auditStorage:
+    enabled: true
+    size: 5Gi
+    mountPath: "/var/log/audit"
+    storageClass: null
+    accessMode: ReadWriteOnce

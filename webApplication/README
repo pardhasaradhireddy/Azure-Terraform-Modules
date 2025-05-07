@@ -1,0 +1,36 @@
+# Detroit Connect Portal
+
+This module includes the azure web resources needed to support the deployment of the
+Detroit Connect Portal application.
+
+## telematicsWeb.tf
+
+- linux app service resource group
+- linux app service plan
+- linux app service
+
+## telematicsApi.tf
+
+- windows app service resource group
+- windows app service plan
+- windows app service
+- virtual network swift connection (telc vnet, dcportal snet)
+
+## applicationInsights.tf
+
+- application insights deployment
+- delegation to telematicsApi windows app service
+
+## keyVault.tf
+
+- key vault access policy for kv-portal resource
+- secret permissions
+
+## storage.tf
+
+- st-dcportal storage account
+- containers
+-- aci-dcportal (private)
+-- aci-dcportal-public (blob)
+- role assignment
+- linux_vm_user_groups get "Contributor" role assignment

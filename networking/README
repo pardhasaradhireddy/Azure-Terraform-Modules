@@ -1,0 +1,39 @@
+This module creates all resources necessary for Pod and Spoke Virtual Networks, including Azure Route Tables.
+
+Current State:  Info here
+
+The following resources are created in this deployment:
+
+POD
+    - Resource Group
+    - Virtual Network
+    - Cloud Firewall Subnet
+    - Azure Gateway Subnet
+
+SPOKE
+    - Resource Group
+    - Virtual Network
+    - API Management Subnet
+    - Application Gateway Frontend Subnet
+    - Azure Redis Cache Subnet
+    - F5 Subnet
+    - HBase Subnet
+    - Kafka Subnet
+    - Azure Kubernetes Service Subnet
+    - Azure App Service Subnet
+    - Azure Route Table
+    - Route Table Subnet Associations
+
+Future State:  Info here
+
+Prior to Updating this Module or Consuming Azure Key Vault Resources, Please Refer to:
+
+https://gsep.daimler.com/confluence/display/DTNATELE/Telematics+2.0+README+Reference+Document
+
+Official Microsoft Documentation for Azure Networking Services:
+
+https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq
+
+Terraform Resources for Azure Virtual Network Provider:
+
+https://www.terraform.io/docs/providers/azure/r/virtual_network.html

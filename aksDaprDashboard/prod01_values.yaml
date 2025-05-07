@@ -1,0 +1,10 @@
+nodeSelector: 
+  app: api
+
+ingress:
+  enabled: true
+  className: nginx
+  host: dapr.prod1.csgna.cloud.tbintra.net
+  tls:
+    enabled: true
+    secretName: ingress-local-tls

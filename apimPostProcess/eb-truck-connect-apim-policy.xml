@@ -1,0 +1,28 @@
+<policies>
+    <inbound>
+        <base />
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized :p" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/${eb_truckconnect_tenant_id}/.well-known/openid-configuration" />
+            <audiences>
+                <audience>${audience}</audience>
+            </audiences>
+            <required-claims>
+                <claim name="roles" match="all">
+                    <value>${role}</value>
+                </claim>
+                <claim name="iss" match="all">
+                    <value>https://sts.windows.net/${eb_truckconnect_tenant_id}/</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

@@ -1,0 +1,3 @@
+output "cospos_coordinator_configuration_id" {
+  value = azurerm_cosmosdb_postgresql_coordinator_configuration.csgna_cospos_coordinator_configuration.id
+}

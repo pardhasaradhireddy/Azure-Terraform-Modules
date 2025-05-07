@@ -1,0 +1,114 @@
+loki:
+
+  # storage:
+  #   type: azure
+  #   azure:
+  #     # Name of the Azure Blob Storage account
+  #     accountName: "stacaksbackupdevcus"
+  #     # Key associated with the Azure Blob Storage account
+  #     # accountKey: <your-account-key>
+  #     # Comprehensive connection string for Azure Blob Storage account (Can be used to replace endpoint, accountName, and accountKey)
+  #     # connectionString: <your-connection-string>
+  #     # Flag indicating whether to use Azure Managed Identity for authentication
+  #     useManagedIdentity: true
+  #     # Flag indicating whether to use a federated token for authentication
+  #     # useFederatedToken: false
+  #     # Client ID of the user-assigned managed identity (if applicable)
+  #     userAssignedId: "1a842504-0179-4120-b5e1-5180e07c9321"
+  #     # Timeout duration for requests made to the Azure Blob Storage account (in seconds)
+  #     #requestTimeout: <your-request-timeout>
+  #     # Domain suffix of the Azure Blob Storage service endpoint (e.g., core.windows.net)
+  #     endpointSuffix: "blob.core.windows.net"
+  #   bucketNames:
+  #     chunks: "chunks"
+  #     ruler: "ruler"
+  #     admin: "admin"
+
+  enabled: true
+  isDefault: true
+  url: http://{{(include "loki.serviceName" .)}}:{{ .Values.loki.service.port }}
+  analytics:
+    reporting_enabled: false
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  livenessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: "defaultstorage"
+    labels: {}
+    annotations: {}
+  service:
+    type: LoadBalancer
+    nodePort:
+    port: 3100
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true" # Use an internal LB with PLS
+      service.beta.kubernetes.io/azure-pls-create: "true"
+      service.beta.kubernetes.io/azure-pls-name: "vpl-loki"
+      service.beta.kubernetes.io/azure-pls-proxy-protocol: "false"
+      service.beta.kubernetes.io/azure-pls-visibility: "*"
+    labels: {}
+    targetPort: http-metrics
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: "default_retention"
+    config:
+    scrape_configs:
+      - job_name: 'tempo'
+        static_configs:
+          - targets:
+              - 'tempo.tempo.svc.cluster.local:3200'  
+        relabel_configs:
+          - source_labels: [__param_target]
+            target_label: instance
+          - source_labels: [__param_target]
+            target_label: __param_job
+          - target_label: job
+            replacement: tempo
+
+    compactor:
+      retention_enabled: true
+    memberlist:
+      join_members:
+        # the value must be defined as string to be evaluated when secret manifest is being generating
+        - '{{ include "loki.fullname" . }}-memberlist'
+
+    resources:
+      requests:
+        memory: "defaultmemory"
+        cpu: "1"
+      limits:
+        memory: "default-memory"
+        cpu: "2"
+   
+promtail:
+  enabled: true
+  config:
+    logLevel: info
+    serverPort: 3101
+    clients:
+      - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - operator: Exists
+      effect: NoExecute
+    - operator: Exists
+      effect: NoSchedule
+    - operator: Exists
+      effect: PreferNoSchedule

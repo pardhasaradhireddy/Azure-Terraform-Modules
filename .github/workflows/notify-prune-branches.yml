@@ -1,0 +1,51 @@
+name: Notify Prune Branches
+
+on:
+  schedule:
+    - cron: "0 0 5,20 * *"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_CLI_READ_ONLY }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
+
+jobs:
+  notify-prune-branches:
+    runs-on: [aksrunnersdev]
+
+    steps:
+      - name: Check Out repository
+        uses: actions/checkout@v3
+
+      - name: Debug environment
+        run: |
+          echo "Repo is: $GITHUB_REPOSITORY"
+          if [ -z "$GITHUB_REPOSITORY" ]; then echo "No GITHUB_REPOSITORY found!"; fi
+          if [ -z "$GITHUB_TOKEN" ]; then echo "No GITHUB_TOKEN found!"; fi
+
+      - name: Run And Capture Output
+        id: script-output
+        run: |
+          # Run the Python script and redirect its output to a file
+          python notify-before-prune-gh-branches.py --token $GITHUB_TOKEN > script_output.txt
+          # Use multi-line syntax for setting an output
+          echo "script_output<<EOF" >> $GITHUB_OUTPUT
+          echo "As part of our ongoing efforts to keep the repository organized and efficient, we will be deleting the branches listed below from $GITHUB_REPOSITORY repository, which are older than 14 days and have not been updated since." >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "Branches to be Deleted:" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          cat script_output.txt >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "For any questions or further assistance, please contact platform team." >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send email with script output
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: mail-relay.emea.daimler.com
+          server_port: 25
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          to: "dw_164_csgna-platform@daimlertruck.com"
+          from: "GitHub Actions <no-reply@daimlertruck.com>"
+          subject: "Scheduled Branch Deletions: ${{ github.repository }}"
+          body: ${{ steps.script-output.outputs.script_output }}

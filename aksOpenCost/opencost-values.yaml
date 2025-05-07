@@ -1,0 +1,20 @@
+opencost:
+  # cloudIntegrationSecret: "cloud-costs"
+  # cloudCost:    
+  #   enabled: true   
+  #   refreshRateHours: 6
+  #   runWindowDays: 3  
+  #   monthToDateInterval: 6
+  #   queryWindowDays: 7
+  prometheus:
+      external:
+        enabled: false
+        # url: "https://prometheus.example.com/prometheus"
+      internal:
+        enabled: true
+        serviceName: prometheus-kube-prometheus-prometheus
+        namespaceName: monitoring
+        port: 9090
+podAnnotations:
+  owner: "puverma"
+  team: "CloudOps"

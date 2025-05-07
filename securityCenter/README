@@ -1,0 +1,25 @@
+This module creates all resources necessary for the Azure Security Center Workspace deployment, establishes pricing tier, and 
+creates a security contact for the workspace.
+
+Current State:  There are a number of issues/bugs with Microsoft Security Center and there are open tickets with the vendor
+to address them.  
+
+The following resources are created in this deployment:
+
+    - Azure Security Center Workspace Deployment (Commented out)
+    - Azure Security Center Pricing Tier
+    - Azure Security Center Contact
+
+Future State:  Pending bug resolution with Microsoft.
+
+Prior to Updating this Module or Consuming Azure Security Center Resources, Please Refer to:
+
+https://gsep.daimler.com/confluence/display/DTNATELE/Telematics+2.0+README+Reference+Document
+
+Official Microsoft Documentation for the Azure Security Center Service:
+
+https://docs.microsoft.com/en-us/azure/security-center/
+
+Terraform Resources for Azure Security Center Service:
+
+https://www.terraform.io/docs/providers/azurerm/r/security_center_workspace.html

@@ -1,0 +1,70 @@
+---
+name: Pull Request Refactor
+  
+on:
+    pull_request:
+        branches:
+            - main
+    workflow_dispatch:
+jobs:
+  tfsec:
+    runs-on: [self-hosted, Linux, X64, large]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          soft_fail: true
+  
+  tflint:
+    runs-on: [self-hosted, Linux, X64, large]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+        with:
+          tflint_version: v0.44.1
+
+      - name: Run TFLint
+        run: tflint --recursive --color --force
+  terraform-format:
+    runs-on: [self-hosted, Linux, X64, large]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Initialize and Validate Terraform Configurations
+        run: |
+            for dir in ./deployments/*/ ; do
+              if [ -d "$dir" ]; then
+                echo "Initializing and validating Terraform in $dir"
+                (cd "$dir" && terraform init -backend=false && terraform validate)
+                if [ $? -ne 0 ]; then
+                  echo "Terraform initialization or validation failed in $dir"
+                  exit 1
+                fi
+              fi
+            done
+      - name: Check Terraform Formatting
+        run: |
+            echo "::group::Terraform fmt results"
+            echo "Fmt results"
+            if ! terraform fmt -check -recursive; then
+              echo "Terraform code is not properly formatted."
+              exit 1
+            else
+              echo "Terraform fmt check passed"
+            fi
+            echo "::endgroup::"

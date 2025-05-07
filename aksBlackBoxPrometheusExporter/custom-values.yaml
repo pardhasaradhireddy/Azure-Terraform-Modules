@@ -1,0 +1,78 @@
+blackbox:
+  image:
+    tag: "${blackbox_image_tag}"
+  enabled: ${blackbox_enabled}
+
+  config:
+    modules:
+      http_2xx:
+        prober: http
+        timeout: "${probe_http_timeout}"
+        retries: ${probe_http_retries}
+        method: GET
+        valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+        valid_http_methods: [ "GET", "POST"]
+        valid_http_status_codes: [200, 201, 202, 203, 204, 205, 206]
+        fail_if_ssl: false
+        insecureSkipVerify: true
+        headers:
+          X-Custom-Header: "some value"
+        path: "/{healthz,livez,ping,actuator/health}" 
+        port: 8080   
+
+      # http_2xx_https:
+      #   prober: http
+      #   timeout: "${probe_http_timeout}"
+      #   retries: ${probe_http_retries}
+      #   method: GET
+      #   valid_http_versions: [ "1.1", "2"]
+      #   valid_http_methods: [ "GET", "POST"]
+      #   valid_http_status_codes: [200, 201, 202, 203, 204, 205, 206, 
+      #                             400, 401, 402, 403, 404, 405, 406, 407, 408, 
+      #                             409, 410, 411, 412, 413, 414, 415, 416, 417, 
+      #                             500, 501, 502, 503, 504, 505]
+      #   fail_if_ssl: false
+      #   insecureSkipVerify: true
+      #   headers:
+      #     X-Custom-Header: "some value"
+      #   tls_config:
+      #     insecure_skip_verify: true
+
+      tcp_connect:
+        prober: tcp
+        timeout: "${probe_tcp_timeout}"
+        retries: ${probe_tcp_retries}
+
+      icmp:
+        prober: icmp
+        timeout: "${probe_icmp_timeout}"
+        retries: ${probe_icmp_retries}
+serviceMonitor:
+  enabled: true
+  namespace: "monitoring"
+  interval: "30s"
+  scrapeTimeout: "10s"
+  labels:
+    release: "prometheus"
+    app.kubernetes.io/instance: "blackbox-exporter"
+  relabelings:
+    - source_labels: [__param_target]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: job
+      replacement: blackbox-exporter
+  targets:
+    - name: blackbox-exporter-http
+      url: http://blackbox-exporter-prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115/probe
+      interval: 30s
+      scrapeTimeout: 10s
+      module: http_2xx 
+    - name: external-url-http
+      url: http://blackbox-exporter-prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115/probe
+      interval: 30s
+      scrapeTimeout: 10s
+      module: http_2xx
+      params:
+        target: 
+          - "https://hq.detroitconnect.com/"

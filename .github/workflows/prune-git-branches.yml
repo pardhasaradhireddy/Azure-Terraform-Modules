@@ -1,0 +1,47 @@
+name: Prune Git Branches
+
+on:
+  schedule:
+    - cron: "0 0 10,25 * *"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_CLI_READ_ONLY }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
+
+jobs:
+  prune-git-branches:
+    runs-on: [aksrunnersdev]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        
+      - name: Debug environment
+        run: |
+          echo "Repo is: $GITHUB_REPOSITORY"
+          if [ -z "$GITHUB_REPOSITORY" ]; then echo "No GITHUB_REPOSITORY found!"; fi
+          if [ -z "$GITHUB_TOKEN" ]; then echo "No GITHUB_TOKEN found!"; fi
+
+      - name: Run Python script and capture output
+        id: script-output
+        run: |
+          python prune-git-branches.py --token $GITHUB_TOKEN > script_output.txt
+          echo "script_output<<EOF" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "The following branches were deleted..." >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          cat script_output.txt >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send email with script output
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: mail-relay.emea.daimler.com
+          server_port: 25
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          to: "dw_164_csgna-platform@daimlertruck.com"
+          from: "GitHub Actions <no-reply@daimlertruck.com>"
+          subject: "Deleted Branches for: terraform-module-platform-datacenter"
+          body: ${{ steps.script-output.outputs.script_output }}

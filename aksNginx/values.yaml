@@ -1,0 +1,21 @@
+controller:
+  nodeSelector :
+    app: api
+  # tolerations:
+  #   - key: "CriticalAddonsOnly"
+  #     operator: "Equal"
+  #     value: "true"
+  #     effect: "NoSchedule"
+  # defaultTLS:
+  #   secret: nginx/ingress-local-tls
+  service:
+    type: LoadBalancer
+    annotations: 
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+      kubernetes.io/ingress.class: "nginx"
+      # nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+
+
+  # controller:
+  #   enableTLSPassthrough: true
+  #   tlsPassthroughPort: true

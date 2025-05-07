@@ -1,0 +1,31 @@
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: cloud-costs
+#   namespace: opencost
+# type: Opaque
+# stringData:
+#   cloud-integration.json: |
+#         {
+#           "subscriptionID": "052e6a56-0fb0-4b25-a2d2-e5f8da8e01a6",
+#           "account": "stacopencostdev",
+#           "container": "stct-opencost-test",
+#           "cloud": "public",
+#           "authorizer": {
+#             "accessKey": "",
+#             "account": "stacopencostdev",
+#             "authorizerType": "AzureAccessKey"
+#           }
+#         }
+#         {
+#           "subscriptionID": "052e6a56-0fb0-4b25-a2d2-e5f8da8e01a6",
+#           "account": "stacopencostdev",
+#           "container": "stct-opencost-test",
+#           "cloud": "public",
+#           "authorizer": {
+#             "accessKey": "",
+#             "account": "stacopencostdev",
+#             "authorizerType": "AzureAccessKey"
+#           }  
+#         }
+  

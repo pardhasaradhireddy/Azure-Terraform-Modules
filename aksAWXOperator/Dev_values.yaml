@@ -1,0 +1,29 @@
+AWX:
+  # enable use of awx-deploy template
+  enabled: true
+  name: awx
+  spec:
+    service_type: ClusterIP
+    ingress_type: ingress
+    ingress_tls_secret: ingress-local-tls
+    ingress_annotations: |
+      kubernetes.io/ingress.class: nginx
+    hostname: "awx.dev1.csgna.cloud.tbintra.net"
+    admin_user: admin
+    no_log: false
+    tolerations: |
+      - key: "app"
+        operator: "Equal"
+        value: "platform"
+        effect: "NoSchedule"
+    postgres_tolerations: |
+      - key: "app"
+        operator: "Equal"
+        value: "platform"
+        effect: "NoSchedule"
+    extra_settings:
+    - setting: TOWER_URL_BASE
+      value: '"http://awx.dev1.csgna.cloud.tbintra.net"'
+    postgres_storage_class: managed
+    # postgres_data_volume_init: true
+

@@ -1,0 +1,29 @@
+This module creates all resources necessary to automate the enablement of the Azure Network Watcher service.
+
+Current State:  Please note that per official Microsoft documentation (link provided below):
+
+WARNING:
+"Opting-out of Network Watcher automatic enablement is a permanent change. Once you opt-out you cannot opt-in without contacting support"
+
+Thus, what we are doing is disabling the automatic enablement so that we can enable it ourselves with our own
+naming convention.
+
+The following resources are created in this deployment:
+
+    - Resource Group
+    - Network Watcher Service Creation
+    - Local-Exec Provisioner to Enable Network Watcher for Subscription
+
+Future State:  Info here
+
+Prior to Updating this Module or Consuming Azure Network Watcher Services, Please Refer to:
+
+https://gsep.daimler.com/confluence/display/DTNATELE/Telematics+2.0+README+Reference+Document
+
+Official Microsoft Documentation for the Azure Network Watcher Service:
+
+https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-create
+
+Terraform Resources for Azure Network Watcher Service:
+
+https://www.terraform.io/docs/providers/azurerm/r/network_watcher.html

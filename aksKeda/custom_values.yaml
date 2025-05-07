@@ -1,0 +1,9 @@
+podIdentity:
+  azureWorkload:
+    enabled: true
+    tenantId: "505cca53-5750-4134-9501-8d52d5df3cd1"
+nodeSelector: 
+  app: api
+additionalAnnotations:
+  team: "CloudOps"
+  owner: "puverma"  

@@ -1,0 +1,25 @@
+This module creates all resources necessary to automate the enablement of the Azure Network connection monitor .
+
+
+
+The following resources are created in this deployment:
+### AzureRM Version
+
+This module uses azurerm version `3.116.0`. Ensure that your environment is compatible with this version to avoid issues.
+    - Connection monitor
+    - end points , Configurations and test groups, target resources (target_resource_type to be one of ["AzureArcVM" "AzureSubnet" "AzureVM" "AzureVNet" "ExternalAddress" "MMAWorkspaceMachine" "MMAWorkspaceNetwork"])
+  
+
+Future State:  Info here
+
+Prior to Updating this Module or Consuming Azure Network Watcher Services, Please Refer to:
+
+https://gsep.daimler.com/confluence/display/DTNATELE/Telematics+2.0+README+Reference+Document
+
+Official Microsoft Documentation for the Azure Network Watcher Service:
+
+https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-create
+
+Terraform Resources for Azure Network Watcher Service:
+
+https://www.terraform.io/docs/providers/azurerm/r/network_watcher.html
